@@ -190,15 +190,42 @@ function handleShare() {
   }
 }
 
+// ---- Sheet open/close motion helper ----
+// Sheets are shown/hidden via the `hidden` attribute (the actual visibility
+// contract — see the [hidden] guard in style.css). The `sheet-enter` class
+// only adds a starting transform/opacity for one frame right after `hidden`
+// is removed, so the browser has something to transition *from* — it never
+// changes whether the sheet is present, just how it appears. Closing skips
+// the animation and hides immediately, since there's no exit transition
+// wired to `hidden` (removing an attribute can't be "waited for").
+function openSheet(backdrop, sheet) {
+  backdrop.hidden = false;
+  sheet.hidden = false;
+  backdrop.classList.add('sheet-enter');
+  sheet.classList.add('sheet-enter');
+  // Force a style flush so the browser registers the "entering" state
+  // before we remove it, otherwise both class changes coalesce into one
+  // frame and no transition plays.
+  void sheet.offsetHeight;
+  requestAnimationFrame(() => {
+    backdrop.classList.remove('sheet-enter');
+    sheet.classList.remove('sheet-enter');
+  });
+}
+function closeSheet(backdrop, sheet) {
+  backdrop.hidden = true;
+  sheet.hidden = true;
+  backdrop.classList.remove('sheet-enter');
+  sheet.classList.remove('sheet-enter');
+}
+
 // ---- "Necə işləyir?" sheet ----
 
 function openHow() {
-  els.howBackdrop.hidden = false;
-  els.howSheet.hidden = false;
+  openSheet(els.howBackdrop, els.howSheet);
 }
 function closeHow() {
-  els.howBackdrop.hidden = true;
-  els.howSheet.hidden = true;
+  closeSheet(els.howBackdrop, els.howSheet);
 }
 
 // ---- Archive / support menu sheet ----
@@ -234,24 +261,20 @@ function renderArchive() {
 function openMenu() {
   els.priceLabel.textContent = String(getPriceUSD());
   renderArchive();
-  els.menuBackdrop.hidden = false;
-  els.menuSheet.hidden = false;
+  openSheet(els.menuBackdrop, els.menuSheet);
 }
 function closeMenu() {
-  els.menuBackdrop.hidden = true;
-  els.menuSheet.hidden = true;
+  closeSheet(els.menuBackdrop, els.menuSheet);
 }
 
 // ---- Sandbox checkout ----
 
 function openCheckout() {
   els.checkoutError.textContent = '';
-  els.checkoutBackdrop.hidden = false;
-  els.checkoutSheet.hidden = false;
+  openSheet(els.checkoutBackdrop, els.checkoutSheet);
 }
 function closeCheckout() {
-  els.checkoutBackdrop.hidden = true;
-  els.checkoutSheet.hidden = true;
+  closeSheet(els.checkoutBackdrop, els.checkoutSheet);
 }
 
 async function confirmCheckout() {
@@ -266,10 +289,13 @@ async function confirmCheckout() {
     return;
   }
 
+  const originalLabel = els.confirmCheckoutBtn.textContent;
   els.confirmCheckoutBtn.disabled = true;
+  els.confirmCheckoutBtn.textContent = 'Yoxlanılır…';
   els.checkoutError.textContent = '';
   const result = await submitSandboxPayment(card);
   els.confirmCheckoutBtn.disabled = false;
+  els.confirmCheckoutBtn.textContent = originalLabel;
 
   if (!result.ok) {
     els.checkoutError.textContent = result.message;
