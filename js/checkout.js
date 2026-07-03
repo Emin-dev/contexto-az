@@ -49,8 +49,13 @@ export function validateCard({ number, expiry, cvc }) {
   if (!expiry || !/^\d{2}\s*\/\s*\d{2}$/.test(expiry.trim())) {
     errors.expiry = 'AA/İİ formatından istifadə edin.';
   } else {
-    const [mm] = expiry.split('/').map((s) => parseInt(s.trim(), 10));
-    if (mm < 1 || mm > 12) errors.expiry = 'Ay 01-12 arasında olmalıdır.';
+    const [mm, yy] = expiry.split('/').map((s) => parseInt(s.trim(), 10));
+    if (mm < 1 || mm > 12) {
+      errors.expiry = 'Ay 01-12 arasında olmalıdır.';
+    } else {
+      const expiryEnd = new Date(2000 + yy, mm, 0); // last day of the expiry month
+      if (expiryEnd < new Date()) errors.expiry = 'Bu kartın müddəti bitib.';
+    }
   }
 
   if (!cvc || !/^\d{3,4}$/.test(cvc.trim())) {

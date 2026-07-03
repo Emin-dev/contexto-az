@@ -66,6 +66,12 @@ check('validateCard rejects malformed expiry and cvc', () => {
   assert.ok(r2.errors.cvc);
 });
 
+check('validateCard rejects a well-formed but already-expired card', () => {
+  const { valid, errors } = validateCard({ number: '4242424242424242', expiry: '01/20', cvc: '123' });
+  assert.equal(valid, false);
+  assert.ok(errors.expiry);
+});
+
 await checkAsync('submitSandboxPayment resolves ok:true with a SANDBOX- reference for a normal valid card', async () => {
   const result = await submitSandboxPayment({ number: '4242424242424242' });
   assert.equal(result.ok, true);

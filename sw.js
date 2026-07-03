@@ -1,6 +1,6 @@
 // Contexto AZ service worker — offline-first cache with versioned busting.
 // Bump CACHE_VERSION whenever the cached assets change to force an update.
-const CACHE_VERSION = 'contexto-az-v1.0.0';
+const CACHE_VERSION = 'contexto-az-v1.0.1';
 
 const CORE_ASSETS = [
   './',
