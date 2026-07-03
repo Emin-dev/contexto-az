@@ -1,0 +1,15 @@
+{
+  "name": "Contexto AZ — Azərbaycanca gündəlik söz oyunu",
+  "short_name": "Contexto AZ",
+  "description": "Gündəlik gizli Azərbaycan sözünü tap. Hər təxmindən sonra sənə nə qədər yaxın olduğunu deyirik.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf6f0",
+  "theme_color": "#faf6f0",
+  "categories": ["games", "puzzle", "education"],
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

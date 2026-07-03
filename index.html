@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Contexto AZ — gündəlik söz oyunu</title>
+  <meta name="description" content="Contexto amma Azərbaycanca. Gündəlik gizli sözü tap — hər təxmindən sonra sənə deyirik nə qədər yaxınsan." />
+
+  <meta name="theme-color" content="#faf6f0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Contexto AZ">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Contexto AZ — gündəlik söz oyunu">
+  <meta property="og:description" content="Gündəlik gizli sözü tap. Hər təxmindən sonra sənə nə qədər yaxın olduğunu deyirik.">
+  <meta property="og:url" content="https://emin-dev.github.io/contexto-az/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Contexto AZ — gündəlik söz oyunu">
+  <meta name="twitter:description" content="Gündəlik gizli sözü tap. Hər təxmindən sonra nə qədər yaxın olduğunu öyrən.">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app" id="app">
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">🧩</span>
+        <span class="brand-name">Contexto <span class="brand-az">AZ</span></span>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="howBtn" type="button" aria-haspopup="dialog" aria-controls="howSheet" aria-label="Necə işləyir?">
+          <span aria-hidden="true">?</span>
+        </button>
+        <button class="icon-btn" id="menuBtn" type="button" aria-haspopup="dialog" aria-controls="menuSheet" aria-label="Arxiv və dəstək">
+          <span aria-hidden="true">⋯</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="main" id="main">
+
+      <section class="intro-card" id="introCard">
+        <p class="intro-text">Gizli bir Azərbaycan sözü var. Hər təxmin etdiyin söz üçün sənə onun gizli sözə <strong>nə qədər yaxın</strong> olduğunu deyəcəyik — rəqəm nə qədər kiçikdirsə, bir o qədər yaxınsan.</p>
+        <p class="intro-sub" id="dayLabel"></p>
+      </section>
+
+      <section class="guess-card" aria-labelledby="guessHeading">
+        <h1 id="guessHeading" class="visually-hidden">Söz təxmin et</h1>
+
+        <form id="guessForm" class="guess-form" autocomplete="off">
+          <label for="guessInput" class="guess-label">Bir söz yaz</label>
+          <div class="guess-input-row">
+            <input
+              id="guessInput"
+              class="guess-input"
+              type="text"
+              inputmode="text"
+              autocapitalize="none"
+              autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
+              placeholder="məs. ev, su, kitab…"
+              maxlength="40"
+            />
+            <button type="submit" class="guess-submit" id="guessSubmit">Yoxla</button>
+          </div>
+          <p class="guess-hint" id="guessHint" role="status" aria-live="polite"></p>
+        </form>
+
+        <div class="best-guess" id="bestGuess" hidden>
+          <span class="best-guess-label">Ən yaxın təxminin</span>
+          <div class="guess-row guess-row--best" id="bestGuessRow"></div>
+        </div>
+      </section>
+
+      <section class="win-card" id="winCard" hidden>
+        <div class="win-emoji" aria-hidden="true">🎉</div>
+        <h2 class="win-title">Tapdın!</h2>
+        <p class="win-sub" id="winSummary"></p>
+        <button class="share-btn" id="shareBtn" type="button">Nəticəni paylaş</button>
+      </section>
+
+      <section class="history-section">
+        <div class="history-head">
+          <h2>Təxminlərin</h2>
+          <span class="guess-count" id="guessCount"></span>
+        </div>
+        <div class="history-list" id="historyList"></div>
+        <p class="empty-state" id="emptyState">Hələ heç nə yoxdur — yuxarıdan ilk sözünü yaz və buradan izlə.</p>
+      </section>
+
+    </main>
+
+    <footer class="foot-note">
+      <p>Hər gün yeni gizli söz. Vaxt məhdudiyyəti yoxdur, "streak" yoxdur, təzyiq yoxdur — istədiyin qədər fikirləş.</p>
+    </footer>
+  </div>
+
+  <!-- "Necə işləyir?" sheet -->
+  <div class="sheet-backdrop" id="howBackdrop" hidden></div>
+  <div class="sheet" id="howSheet" role="dialog" aria-modal="true" aria-labelledby="howTitle" hidden>
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <div class="sheet-header">
+      <h2 id="howTitle">Necə işləyir?</h2>
+      <button class="icon-btn" id="closeHowBtn" type="button" aria-label="Bağla">✕</button>
+    </div>
+    <div class="sheet-body">
+      <h3>Oyun necə oynanır</h3>
+      <p>Hər gün gizli bir Azərbaycan sözü seçilir (hamı üçün eyni gündə eyni söz). Nə istəyirsən onu yaz — sənə həmin sözün gizli sözə nə qədər semantik yaxın olduğunu bir rəqəmlə deyəcəyik. 1 = gizli sözün özü. Rəqəm nə qədər kiçikdirsə, bir o qədər yaxınsan.</p>
+
+      <h3>Məlumatın mənbəyi haqqında dürüst qeyd</h3>
+      <p><strong>Bu, bir hobbi/portfolio layihəsidir.</strong> Söz-yaxınlıq siyahıları süni intellektin köməyi ilə hazırlanıb və mümkün olan yerlərdə əsl Azərbaycan dili mənbələri (izahlı lüğət, sinonim lüğətləri, tematik söz qrupları, Vikisözlük) ilə tutuşdurulub. <strong>Lakin bu siyahılar hələ ana dili Azərbaycan dili olan bir insan tərəfindən yoxlanılmayıb.</strong> Ona görə bəzi sıralamalar sənə qəribə və ya səhv görünə bilər — bu tamamilə mümkündür və gözlənilir.</p>
+      <p>Səhv və ya qəribə bir sıralama tapsan, xahiş edirik bizə bildir:</p>
+      <p><a class="issue-link" href="https://github.com/Emin-dev/contexto-az/issues/new" target="_blank" rel="noopener">GitHub-da issue aç →</a></p>
+
+      <h3>Məxfilik</h3>
+      <p>Təxminlərin yalnız bu cihazda, brauzerin yaddaşında saxlanılır. Heç bir server tərəfə göndərilmir, heç kim sənin təxminlərini görmür.</p>
+    </div>
+  </div>
+
+  <!-- Archive / support menu sheet -->
+  <div class="sheet-backdrop" id="menuBackdrop" hidden></div>
+  <div class="sheet" id="menuSheet" role="dialog" aria-modal="true" aria-labelledby="menuTitle" hidden>
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <div class="sheet-header">
+      <h2 id="menuTitle">Arxiv və dəstək</h2>
+      <button class="icon-btn" id="closeMenuBtn" type="button" aria-label="Bağla">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="plan-card" id="freePlanCard">
+        <h3>Pulsuz — həmişə</h3>
+        <ul>
+          <li>Bugünkü tapmaca həmişə pulsuzdur</li>
+          <li>Limitsiz təxmin sayı</li>
+          <li>Nəticəni paylaşma</li>
+        </ul>
+        <p class="plan-note">Bugünkü oyun heç vaxt ödəniş tələb etmir.</p>
+      </div>
+
+      <div class="plan-card plan-card--highlight" id="supportCard">
+        <h3>Dəstək ol — birdəfəlik $<span id="priceLabel">3</span></h3>
+        <ul>
+          <li>Keçmiş günlərin arxivinə giriş</li>
+          <li>Şəxsi statistika səhifəsi</li>
+          <li>Layihəni davam etdirməyə kömək</li>
+        </ul>
+        <p class="plan-note">Reklam yoxdur və heç vaxt olmayacaq — bu, sadəcə oyunu bəyənənlər üçün könüllü dəstəkdir, bugünkü tapmacaya görə ödəniş deyil.</p>
+        <button class="upgrade-btn" id="supportBtn" type="button">Sandbox ödənişinə keç</button>
+      </div>
+
+      <div class="archive-locked" id="archiveLocked">
+        <p>Arxivə giriş dəstək satın alındıqdan sonra burada görünəcək (sandbox rejimi).</p>
+      </div>
+      <div class="archive-unlocked" id="archiveUnlocked" hidden>
+        <h3>Keçmiş günlər</h3>
+        <div class="archive-list" id="archiveList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sandbox checkout modal -->
+  <div class="sheet-backdrop" id="checkoutBackdrop" hidden></div>
+  <div class="sheet checkout-sheet" id="checkoutSheet" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle" hidden>
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <div class="sheet-header">
+      <h2 id="checkoutTitle">Sandbox ödəniş</h2>
+      <button class="icon-btn" id="closeCheckoutBtn" type="button" aria-label="Bağla">✕</button>
+    </div>
+    <div class="sheet-body">
+      <p class="demo-banner">SANDBOX REJİMİ — real ödəniş alınmayacaq. Real kart məlumatı daxil etməyin.</p>
+      <div class="fake-card-form">
+        <label for="cardNum">Kart nömrəsi</label>
+        <input id="cardNum" type="text" inputmode="numeric" placeholder="4242 4242 4242 4242" value="4242 4242 4242 4242" />
+        <div class="fake-card-row">
+          <div>
+            <label for="cardExp">Bitmə tarixi</label>
+            <input id="cardExp" type="text" placeholder="12/30" value="12/30" />
+          </div>
+          <div>
+            <label for="cardCvc">CVC</label>
+            <input id="cardCvc" type="text" placeholder="123" value="123" />
+          </div>
+        </div>
+        <p class="field-error" id="checkoutError" role="alert"></p>
+      </div>
+      <button class="save-btn" id="confirmCheckoutBtn" type="button">Sandbox ödənişini təsdiqlə — $3</button>
+      <p class="sandbox-note">Simulyasiyadır. Şəbəkə çağırışı yoxdur, kart məlumatı heç yerə göndərilmir. Rədd testi üçün <code>4000 0000 0000 0002</code> istifadə et.</p>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
